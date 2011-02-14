@@ -13,11 +13,19 @@ module LazyHighCharts
         self.tap do |high_chart|
           high_chart.data       ||= []
           high_chart.options    ||= {}
+          high_chart.defaults_options
           high_chart.html_options = html_opts
           high_chart.canvas       = canvas if canvas
           yield high_chart if block_given?
         end
       end
+
+    #	title:		legend: 		xAxis: 		yAxis: 		tooltip: 	credits:  :plotOptions
+
+    def defaults_options 
+      self.chart({:renderTo => nil})
+    end
+
 
     # Pass other methods through to the javascript high_chart object.
     #
