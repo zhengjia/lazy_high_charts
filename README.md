@@ -1,3 +1,5 @@
+This is forked from the original gem_support branch
+
 LazyHighCharts
 =======
  update(Dec 4,2010)
