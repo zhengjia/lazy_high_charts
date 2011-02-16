@@ -1,72 +1,35 @@
 module LazyHighCharts
   class HighChart
-    SERIES_OPTIONS = %w(lines points bars shadowSize colors)
 
-    attr_accessor :data, :options, :placeholder, :html_options
-    alias  :canvas :placeholder
-    alias  :canvas= :placeholder=
+    attr_accessor :options
 
-
-      def initialize(canvas = nil, html_opts = {})
-
-        @collection_filter = nil
-        self.tap do |high_chart|
-          high_chart.data       ||= []
-          high_chart.options    ||= {}
-          high_chart.defaults_options
-          high_chart.html_options = html_opts
-          high_chart.canvas       = canvas if canvas
-          yield high_chart if block_given?
-        end
+    def initialize(graph_type = nil )
+      @options = {}
+      self.tap do |high_chart|
+        high_chart.chart
+        high_chart.chart( :defaultSeriesType => graph_type ) if graph_type
+        yield high_chart if block_given?
       end
-
-    #	title:		legend: 		xAxis: 		yAxis: 		tooltip: 	credits:  :plotOptions
-
-    def defaults_options 
-      self.chart({:renderTo => nil})
     end
-
-
-    # Pass other methods through to the javascript high_chart object.
-    #
-    # For instance: <tt>high_chart.grid(:color => "#699")</tt>
-    #
-    def method_missing(meth, opts = {})
-      merge_options meth, opts
-    end
-
-    # Add a simple series to the graph:
-    # 
-    #   data = [[0,5], [1,5], [2,5]]
-    #   @high_chart.series :name=>'Updated', :data=>data
-    #   @high_chart.series :name=>'Updated', :data=>[5, 1, 6, 1, 5, 4, 9]
-    #
-    def series(opts = {})
-      @data ||= []
-      if opts.blank?
-        @data << series_options.merge(:name => label, :data => d)
+    
+    def series(value, option = nil )
+      @options[:series] ||= []
+      if option == :merge
+        @options[:series].first.merge!(value)
       else
-        @data << opts.merge(:name => opts[:name], :data => opts[:data])
+        @options[:series] << value
       end
+    end
+    
+    def method_missing(meth, value = {})
+      merge_options meth, value
     end
 
     private
-    def series_options
-      @options.reject {|k,v| SERIES_OPTIONS.include?(k.to_s) == false}
-    end
 
     def merge_options(name, opts)
-      @options.merge!  name => opts
-    end
-
-    def arguments_to_options(args)
-      if args.blank? 
-        {:show => true}
-      elsif args.is_a? Array
-        args.first
-      else
-        args
-      end
+      existing_value = @options[name] || {}
+      @options.merge!  name => existing_value.merge!(opts)
     end
 
   end

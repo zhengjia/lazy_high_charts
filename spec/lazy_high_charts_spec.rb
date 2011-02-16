@@ -6,22 +6,19 @@ describe HighChartsHelper do
   include LazyHighCharts::LayoutHelper
 
   before(:each) do
-    @class       = "stylin"
     @placeholder = "placeholder"
-    @chart        = LazyHighCharts::HighChart.new(@placeholder)
+    @chart        = LazyHighCharts::HighChart.new
     @data        = "data"
     @options     = "options"
   end
   
   describe "high_chart_helper" do
-    it "should return a div with an id of high_chart object" do
-      hc = LazyHighCharts::HighChart.new("placeholder", :class => 'stylin')
-      high_chart(hc.placeholder, hc).should have_selector('div', :id => hc.placeholder, :class => 'stylin')
-    end
-
     it "should return a script" do
-      hc = LazyHighCharts::HighChart.new("placeholder")
-      high_chart(hc.placeholder, hc).should have_selector('script')
+      high_chart(@placeholder, @chart).should have_selector('script')
+    end
+    
+    it "should not render if LazyHighCharts::HighChart.new is not avaiable" do
+      high_chart(@placeholder, nil).should be_nil
     end
   end
    

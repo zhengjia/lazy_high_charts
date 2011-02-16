@@ -12,10 +12,11 @@ module LazyHighCharts
     end
     private_methods :format_options
     
-    def high_chart(placeholder, object  , &block)
-      object.html_options.merge!({:id=>placeholder})
-      object.options[:chart][:renderTo] = placeholder
-      high_graph(placeholder,object , &block).concat(content_tag("div","", object.html_options))
+    def high_chart(placeholder, object, &block)
+      if object
+        object.options[:chart][:renderTo] = placeholder
+        high_graph(placeholder, object, &block)
+      end
     end
 
     def high_graph(placeholder, object, &block)
@@ -28,29 +29,21 @@ module LazyHighCharts
         "tooltip"     => object.options[:tooltip],
         "credits"     => object.options[:credits],
         "plotOptions" => object.options[:plot_options],
-        "series"      => object.data,
+        "series"      => object.options[:series],
         "subtitle"    => object.options[:subtitle]
       }.reject{|k,v| v.nil?}
       
       graph =<<-EOJS
       <script type="text/javascript">
       jQuery(function() {
-            // 1. Define JSON options
             var options = { #{format_options} };
-
-            // 2. Add callbacks (non-JSON compliant)
-                                  #{capture(&block) if block_given?}
-            // 3. Build the chart
+            #{capture(&block) if block_given?}
             var chart = new Highcharts.Chart(options);
         });
         </script>
       EOJS
       
-      if defined?(raw)
-        return raw(graph) 
-      else
-        return graph
-      end
+      raw(graph) 
       
     end
   end
