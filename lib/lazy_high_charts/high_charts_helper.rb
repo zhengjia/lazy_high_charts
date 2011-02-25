@@ -8,6 +8,7 @@ module LazyHighCharts
       @options.each do |k,v|
         options << "#{k}: #{v.to_json}"
       end
+      options << "tooltip:{}"
       options.join(', ')
     end
     private_methods :format_options
@@ -26,7 +27,6 @@ module LazyHighCharts
         "legend"      => object.options[:legend],
         "xAxis"       => object.options[:xAxis],
         "yAxis"       => object.options[:yAxis],
-        "tooltip"     => object.options[:tooltip] || {},
         "credits"     => object.options[:credits],
         "plotOptions" => object.options[:plotOptions],
         "series"      => object.options[:series],
