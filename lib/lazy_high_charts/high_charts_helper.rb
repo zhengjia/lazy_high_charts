@@ -26,7 +26,7 @@ module LazyHighCharts
         "legend"      => object.options[:legend],
         "xAxis"       => object.options[:xAxis],
         "yAxis"       => object.options[:yAxis],
-        "tooltip"     => object.options[:tooltip],
+        "tooltip"     => object.options[:tooltip] || {},
         "credits"     => object.options[:credits],
         "plotOptions" => object.options[:plotOptions],
         "series"      => object.options[:series],
